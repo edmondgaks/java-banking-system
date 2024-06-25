@@ -29,7 +29,7 @@ public class EmailService {
         Context context = new Context();
         context.setVariable("user", user.getUsername());
 
-        String htmlContent = templateEngine.process("emails/welcome-email.html", context);
+        String htmlContent = templateEngine.process("welcome-email.html", context);
 
         helper.setTo(user.getEmail());
         helper.setSubject("Welcome to Our Application");
@@ -47,7 +47,7 @@ public void sendTransactionEmail(Customer fromCustomer, Customer toCustomer, dou
     context.setVariable("toCustomer", toCustomer.getFirstName() + " " + toCustomer.getLastName());
     context.setVariable("amount", amount);
 
-    String htmlContent = templateEngine.process("../../../../templates/transaction-email.html", context);
+    String htmlContent = templateEngine.process("transaction-email.html", context);
 
     helper.setTo(fromCustomer.getEmail());
     helper.setSubject("Transaction Notification");
@@ -63,7 +63,7 @@ public void sendTransactionEmail(Customer fromCustomer, Customer toCustomer, dou
         context.setVariable("user", user.getUsername());
         context.setVariable("verificationLink", verificationLink);
 
-        String htmlContent = templateEngine.process("emails/verify-account.html", context);
+        String htmlContent = templateEngine.process("verify-account.html", context);
 
         helper.setTo(user.getEmail());
         helper.setSubject("Account Verification");
@@ -80,7 +80,7 @@ public void sendTransactionEmail(Customer fromCustomer, Customer toCustomer, dou
         context.setVariable("user", user.getUsername());
         context.setVariable("resetPasswordLink", resetPasswordLink);
 
-        String htmlContent = templateEngine.process("emails/reset-password.html", context);
+        String htmlContent = templateEngine.process("reset-password.html", context);
 
         helper.setTo(user.getEmail());
         helper.setSubject("Password Reset Request");
@@ -97,7 +97,7 @@ public void sendTransactionEmail(Customer fromCustomer, Customer toCustomer, dou
         context.setVariable("customer", customer.getFirstName() + " " + customer.getLastName());
         context.setVariable("amount", amount);
 
-        String htmlContent = templateEngine.process("emails/saving-email.html", context);
+        String htmlContent = templateEngine.process("saving-email.html", context);
 
         helper.setTo(customer.getEmail());
         helper.setSubject("Saving Transaction Notification");
@@ -114,7 +114,7 @@ public void sendTransactionEmail(Customer fromCustomer, Customer toCustomer, dou
         context.setVariable("customer", customer.getFirstName() + " " + customer.getLastName());
         context.setVariable("amount", amount);
 
-        String htmlContent = templateEngine.process("emails/withdraw-email.html", context);
+        String htmlContent = templateEngine.process("withdraw-email.html", context);
 
         helper.setTo(customer.getEmail());
         helper.setSubject("Withdrawal Transaction Notification");

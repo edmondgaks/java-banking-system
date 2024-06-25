@@ -30,54 +30,67 @@ public class BankingServiceImpl implements BankingService {
     private final  EmailService emailService;
     @Override
     public void save(UUID id, double amount) {
-        Customer customer = customerRepository.findById(id).get();
-        if(customer == null){
-            throw new InternalServerErrorException("Customer not found");
+        try {
+            Customer customer = customerRepository.findById(id).get();
+            if(customer == null){
+                throw new InternalServerErrorException("Customer not found");
+            }
+            customer.setBalance(customer.getBalance() + amount);
+            customerRepository.save(customer);
+
+            Saving saving=new Saving();
+            saving.setCustomer(customer);
+            saving.setAmount(amount);
+            saving.setBankingDate(new Date());
+
+            savingRepository.save(saving);
+            emailService.sendSavingEmail(customer,amount);
+            //send transaction email
+
+
+            Message message = new Message();
+            message.setCustomer(customer);
+            message.setMessage("Saved " + amount + " to the account");
+            message.setCreatedDateTime(new Date());
+            messageRepository.save(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new InternalServerErrorException("failed to withdraw money ");
         }
-        customer.setBalance(customer.getBalance() + amount);
-        customerRepository.save(customer);
 
-        Saving saving=new Saving();
-        saving.setCustomer(customer);
-        saving.setAmount(amount);
-        saving.setBankingDate(new Date());
-
-        savingRepository.save(saving);
-        //send transaction email
-
-
-        Message message = new Message();
-        message.setCustomer(customer);
-        message.setMessage("Saved " + amount + " to the account");
-        message.setCreatedDateTime(new Date());
-        messageRepository.save(message);
 
     }
 
     @Override
     public void withdraw(UUID id, double amount) {
-      Customer customer= customerRepository.findById(id).get();
-        if(customer == null){
-            throw new InternalServerErrorException("Customer not found");
+        try{
+            Customer customer= customerRepository.findById(id).get();
+            if(customer == null){
+                throw new InternalServerErrorException("Customer not found");
+            }
+            if(customer.getBalance() < amount){
+                throw new InternalServerErrorException("Insufficient funds");
+            }
+            customer.setBalance(customer.getBalance() - amount);
+            customerRepository.save(customer);
+
+            Withdraw withdraw=new Withdraw();
+            withdraw.setCustomer(customer);
+            withdraw.setAmount(amount);
+            withdraw.setBankingDate(new Date());
+
+            withDrawRepository.save(withdraw);
+            emailService.sendWithdrawEmail(customer,amount);
+            Message message = new Message();
+            message.setCustomer(customer);
+            message.setMessage("Withdrew " + amount + " from the account");
+            message.setCreatedDateTime(new Date());
+            messageRepository.save(message);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw  new InternalServerErrorException("failed to withdraw money ");
+
         }
-        if(customer.getBalance() < amount){
-            throw new InternalServerErrorException("Insufficient funds");
-        }
-        customer.setBalance(customer.getBalance() - amount);
-        customerRepository.save(customer);
-
-        Withdraw withdraw=new Withdraw();
-        withdraw.setCustomer(customer);
-        withdraw.setAmount(amount);
-        withdraw.setBankingDate(new Date());
-
-        withDrawRepository.save(withdraw);
-
-        Message message = new Message();
-        message.setCustomer(customer);
-        message.setMessage("Withdrew " + amount + " from the account");
-        message.setCreatedDateTime(new Date());
-        messageRepository.save(message);
 
 
     }
