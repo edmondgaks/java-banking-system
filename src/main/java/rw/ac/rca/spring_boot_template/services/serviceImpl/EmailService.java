@@ -38,56 +38,24 @@ public class EmailService {
         javaMailSender.send(mimeMessage);
     }
 //sendTransactionEmail
-public void sendTransactionEmail(Customer fromCustomer, Customer toCustomer, double amount) throws MessagingException {
-    MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-
-    Context context = new Context();
-    context.setVariable("fromCustomer", fromCustomer.getFirstName() + " " + fromCustomer.getLastName());
-    context.setVariable("toCustomer", toCustomer.getFirstName() + " " + toCustomer.getLastName());
-    context.setVariable("amount", amount);
-
-    String htmlContent = templateEngine.process("transaction-email.html", context);
-
-    helper.setTo(fromCustomer.getEmail());
-    helper.setSubject("Transaction Notification");
-    helper.setText(htmlContent, true);
-
-    javaMailSender.send(mimeMessage);
-}
-    public void sendVerificationEmail(User user, String verificationLink) throws MessagingException {
+    public void sendTransactionEmail(Customer fromCustomer, Customer toCustomer, double amount) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
         Context context = new Context();
-        context.setVariable("user", user.getUsername());
-        context.setVariable("verificationLink", verificationLink);
+        context.setVariable("fromCustomer", fromCustomer.getFirstName() + " " + fromCustomer.getLastName());
+        context.setVariable("toCustomer", toCustomer.getFirstName() + " " + toCustomer.getLastName());
+        context.setVariable("amount", amount);
 
-        String htmlContent = templateEngine.process("verify-account.html", context);
+        String htmlContent = templateEngine.process("transaction-email.html", context);
 
-        helper.setTo(user.getEmail());
-        helper.setSubject("Account Verification");
+        helper.setTo(fromCustomer.getEmail());
+        helper.setSubject("Transaction Notification");
         helper.setText(htmlContent, true);
 
         javaMailSender.send(mimeMessage);
     }
 
-    public void sendPasswordResetEmail(User user, String resetPasswordLink) throws MessagingException {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-
-        Context context = new Context();
-        context.setVariable("user", user.getUsername());
-        context.setVariable("resetPasswordLink", resetPasswordLink);
-
-        String htmlContent = templateEngine.process("reset-password.html", context);
-
-        helper.setTo(user.getEmail());
-        helper.setSubject("Password Reset Request");
-        helper.setText(htmlContent, true);
-
-        javaMailSender.send(mimeMessage);
-    }
 
     public void sendSavingEmail(Customer customer, double amount) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
